@@ -2,7 +2,8 @@
 const audio = document.querySelector('#audio');
 const statusText = document.querySelector('#player-status');
 const toggle = document.querySelector('#player-toggle');
-const volume = document.querySelector('#volume');
+const volumeControls = document.querySelectorAll('.volume-control');
+function setStatus(text){statusText.textContent=text;document.querySelectorAll('[data-stream-status]').forEach(el=>el.textContent=text);}
 audio.volume = .7;
 let connecting = false;
 function syncPlayer(){
@@ -10,20 +11,21 @@ function syncPlayer(){
   document.body.classList.toggle('is-playing',playing);
   document.querySelectorAll('.play-icon').forEach(el=>el.textContent=playing?'Ⅱ':'▶');
   toggle.setAttribute('aria-label',playing?'Livestream pausieren':'Livestream starten');
+  document.querySelector('#hero-play').setAttribute('aria-label',playing?'HockeyRadio Livestream pausieren':'HockeyRadio Livestream starten');
   document.querySelectorAll('.play-trigger').forEach(el=>el.setAttribute('aria-pressed',String(playing)));
 }
 document.querySelectorAll('.play-trigger').forEach(button=>button.addEventListener('click',async()=>{
-  if(connecting){audio.pause();connecting=false;statusText.textContent='Stream pausiert';return;}
+  if(connecting){audio.pause();connecting=false;setStatus('Stream pausiert');return;}
   if(!audio.paused){audio.pause();return;}
-  connecting=true;statusText.textContent='Verbindung zum Stream …';
-  try{await audio.play();}catch(error){if(error.name!=='AbortError')statusText.textContent='Stream nicht erreichbar. Bitte erneut starten.';}finally{connecting=false;syncPlayer();}
+  connecting=true;setStatus('Verbindung zum Stream …');
+  try{await audio.play();}catch(error){if(error.name!=='AbortError')setStatus('Stream nicht erreichbar. Bitte erneut starten.');}finally{connecting=false;syncPlayer();}
 }));
-audio.addEventListener('playing',()=>{statusText.textContent='Du hörst HockeyRadio · Live';syncPlayer();});
-audio.addEventListener('pause',()=>{statusText.textContent='Stream pausiert';syncPlayer();});
-audio.addEventListener('waiting',()=>{statusText.textContent='Stream lädt …';});
-audio.addEventListener('error',()=>{statusText.textContent='Verbindung unterbrochen. Bitte erneut starten.';syncPlayer();});
-audio.addEventListener('ended',()=>{statusText.textContent='Stream beendet. Erneut starten?';syncPlayer();});
-volume.addEventListener('input',()=>{audio.volume=Number(volume.value);audio.muted=false;syncMute();});
+audio.addEventListener('playing',()=>{setStatus('Du hörst HockeyRadio · Live');syncPlayer();});
+audio.addEventListener('pause',()=>{setStatus('Stream pausiert');syncPlayer();});
+audio.addEventListener('waiting',()=>{setStatus('Stream lädt …');});
+audio.addEventListener('error',()=>{setStatus('Verbindung unterbrochen. Bitte erneut starten.');syncPlayer();});
+audio.addEventListener('ended',()=>{setStatus('Stream beendet. Erneut starten?');syncPlayer();});
+volumeControls.forEach(control=>control.addEventListener('input',()=>{audio.volume=Number(control.value);audio.muted=false;volumeControls.forEach(other=>other.value=control.value);syncMute();}));
 const mute=document.querySelector('#mute');
 function syncMute(){mute.textContent=audio.muted||audio.volume===0?'⊘':'♪';mute.setAttribute('aria-label',audio.muted?'Ton einschalten':'Ton ausschalten');}
 mute.addEventListener('click',()=>{audio.muted=!audio.muted;syncMute();});
@@ -49,30 +51,14 @@ function renderProgram(){document.querySelector('#program-grid').innerHTML=progr
 document.querySelectorAll('[data-day]').forEach(button=>button.addEventListener('click',()=>{selectedDay=Number(button.dataset.day);document.querySelectorAll('[data-day]').forEach(b=>b.setAttribute('aria-pressed',String(b===button)));renderProgram();}));
 selectedDay=(new Date(new Date().toLocaleString('en-US',{timeZone:'Europe/Berlin'})).getDay()+6)%7;
 document.querySelectorAll('[data-day]').forEach(b=>b.setAttribute('aria-pressed',String(Number(b.dataset.day)===selectedDay)));renderProgram();
-const content={
-imprint:['IMPRESSUM',`<p class="dialog-note">Website-Vorschau: Die verbindlichen Betreiberangaben für HockeyRadio sind noch zu ergänzen.</p><p>Vor dem offiziellen Start müssen insbesondere Betreiber, ladungsfähige Anschrift, Vertretungsberechtigte, Kontakt und redaktionell Verantwortliche bestätigt und hier eingetragen werden.</p><p>Die Nennung von SpradeTV und Blueline beschreibt die Senderzuordnung laut Stream-Metadaten und ersetzt keine Betreiberangaben.</p>`],
-privacy:['DATENSCHUTZ',`<p class="dialog-note">Informationen zur Vorschau. Die vollständige Datenschutzerklärung mit Verantwortlichem und Rechtsgrundlagen folgt nach Freigabe.</p><p>Beim Öffnen der Website werden Dateien über Vercel und Schriftarten von Google Fonts geladen. Dabei wird deine IP-Adresse an die jeweiligen Anbieter übertragen. Beim Starten des Livestreams verbindet sich dein Browser mit RadioKing; dabei werden deine IP-Adresse und technische Verbindungsdaten übermittelt.</p><p>Deine Sender-Merkliste wird ausschließlich lokal im Browser gespeichert. Diese Vorschau verwendet keine Analyse- oder Marketingwerkzeuge.</p><p>Eine Mikrofonaufnahme startet nur auf deinen ausdrücklichen Klick und nach Browserfreigabe. Die Aufnahme bleibt lokal auf deinem Gerät. Es gibt keinen automatischen Upload.</p>`],
-greeting:['DEINE STIMME FÜRS TEAM.',`<p>Ein Gruß an die Fankurve? Nimm hier bis zu 30 Sekunden auf und lade deinen Radiogruß herunter.</p><p class="dialog-note">Die Aufnahme bleibt auf deinem Gerät. Ein Versand an die Redaktion ist in dieser Vorschau noch nicht eingerichtet.</p><div class="record-controls"><button class="button" id="record-start">● Aufnahme starten</button><button class="button outline" id="record-stop" disabled>Aufnahme beenden</button></div><p id="record-status" role="status">Das Mikrofon wird erst nach deinem Klick angefragt.</p><div id="record-result"></div>`]
-};
-document.querySelectorAll('[data-dialog]').forEach(button=>button.addEventListener('click',()=>{const [title,body]=content[button.dataset.dialog];showDialog(title,body);if(button.dataset.dialog==='greeting')setupRecording();}));
+document.querySelectorAll('[data-dialog="greeting"]').forEach(button=>button.addEventListener('click',()=>{
+  if(!audio.paused)audio.pause();
+  showDialog('JETZT RADIOGRUSS ABSENDEN',`<p class="greeting-intro">Deine Stimme für die Fankurve. Nimm deinen Gruß auf und sende ihn direkt an HockeyRadio.</p><div class="radioking-widget"><iframe id="AudioDedication" title="Radiogruß an HockeyRadio senden" src="https://widget.radioking.io/audio-shoutouts/?id=hockey-radio" allow="microphone" width="265" height="365" style="border-radius: 8px;" frameborder="0"></iframe></div><p class="widget-note">Die Aufnahme und der Versand erfolgen über RadioKing. Der Mikrofonzugriff beginnt erst, wenn du im Widget eine Aufnahme startest und dein Browser die Freigabe hat. <a href="/datenschutz">Datenschutzhinweise</a></p><a class="widget-fallback" href="https://widget.radioking.io/audio-shoutouts/?id=hockey-radio" target="_blank" rel="noopener noreferrer">Widget alternativ in neuem Tab öffnen ↗</a>`);
+  dialog.classList.add('greeting-dialog');
+}));
 document.querySelector('#close-dialog').addEventListener('click',()=>dialog.close());
 dialog.addEventListener('click',e=>{if(e.target===dialog){const r=dialog.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)dialog.close();}});
-let recorder=null,recordStream=null,recordTimer=null,recordInterval=null,recordUrl=null,recordSession=0;
-function stopTracks(){recordStream?.getTracks().forEach(track=>track.stop());recordStream=null;clearTimeout(recordTimer);clearInterval(recordInterval);}
-dialog.addEventListener('close',()=>{recordSession++;if(recorder?.state==='recording')recorder.stop();stopTracks();if(recordUrl){URL.revokeObjectURL(recordUrl);recordUrl=null;}});
-function setupRecording(){
-const start=document.querySelector('#record-start'),stop=document.querySelector('#record-stop'),status=document.querySelector('#record-status'),result=document.querySelector('#record-result');
-if(!navigator.mediaDevices?.getUserMedia||!window.MediaRecorder){start.disabled=true;status.textContent='Dein Browser unterstützt hier keine Aufnahme. Verwende einen aktuellen Browser über HTTPS.';return;}
-start.addEventListener('click',async()=>{start.disabled=true;const session=++recordSession;try{
-recordStream=await navigator.mediaDevices.getUserMedia({audio:true});if(!dialog.open||session!==recordSession){stopTracks();return;}
-if(recordUrl){URL.revokeObjectURL(recordUrl);recordUrl=null;}result.innerHTML='';
-recorder=new MediaRecorder(recordStream);const chunks=[];
-recorder.addEventListener('dataavailable',e=>{if(e.data.size)chunks.push(e.data);});
-recorder.addEventListener('stop',()=>{stopTracks();if(session!==recordSession||!dialog.open)return;const blob=new Blob(chunks,{type:recorder.mimeType});recordUrl=URL.createObjectURL(blob);const ext=recorder.mimeType.includes('mp4')?'m4a':'webm';result.innerHTML=`<audio class="record-preview" controls src="${recordUrl}"></audio><a class="button" href="${recordUrl}" download="HockeyRadio-Radiogruss.${ext}">Radiogruß herunterladen ↓</a>`;status.textContent='Fertig. Du kannst die Aufnahme anhören und herunterladen.';start.disabled=false;stop.disabled=true;});
-recorder.start();let seconds=0;status.textContent='Aufnahme läuft · 0 / 30 Sekunden';stop.disabled=false;
-recordInterval=setInterval(()=>{seconds++;status.textContent=`Aufnahme läuft · ${seconds} / 30 Sekunden`;},1000);
-recordTimer=setTimeout(()=>{if(recorder.state==='recording')recorder.stop();},30000);
-}catch(error){stopTracks();start.disabled=false;status.textContent='Mikrofon nicht verfügbar oder nicht freigegeben. Prüfe die Mikrofonfreigabe deines Browsers.';}});
-stop.addEventListener('click',()=>{if(recorder?.state==='recording')recorder.stop();});
-}
+dialog.addEventListener('close',()=>{dialog.classList.remove('greeting-dialog');dialogBody.innerHTML='';});
+const partnersToggle=document.querySelector('#partners-toggle');
+partnersToggle.addEventListener('click',()=>{const paused=document.querySelector('.partners').classList.toggle('paused');partnersToggle.setAttribute('aria-pressed',String(paused));partnersToggle.setAttribute('aria-label',paused?'Partner-Slider starten':'Partner-Slider anhalten');partnersToggle.textContent=paused?'▶':'Ⅱ';});
 document.querySelector('#year').textContent=new Date().getFullYear();

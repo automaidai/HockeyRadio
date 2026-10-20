@@ -8,9 +8,12 @@ Responsive statische Website für HockeyRadio. Veröffentlichung über GitHub un
 - Farben der referenzierten SpradeTV-Website: #07112a, #0e1c3f, #05d9ff, #a8b6d8.
 - Beide vom Auftraggeber gelieferten SVG-Logos sind enthalten.
 - Sendeplan ist ausdrücklich ein Beispiel. Keine tatsächlichen Übertragungen zugesichert.
-- Mikrofonaufnahme erfolgt nur nach aktivem Start und Freigabe. Kein Upload; ausschließlich lokaler Download.
+- Radiogrüße über das offizielle RadioKing-Widget. Lädt erst nach Klick; Mikrofonzugriff nur nach Aufnahme-Start und Browserfreigabe. Tatsächlicher Versand erfolgt über RadioKing.
 - Sender-Merkliste im lokalen Browser-Speicher. Keine Tracking- oder Marketingintegration.
-- Vor offiziellem Launch: Betreiberangaben und Datenschutzerklärung redaktionell/juristisch freigeben, echten Sendeplan eintragen, Vorschauhinweise entfernen, robots-Meta von noindex auf index umstellen, Domain samt DNS in Vercel verbinden.
+- Impressum von SpradeTV übernommen. SpradeTV-Datenschutztext vollständig und als Originalfassung wiedergegeben; technische HockeyRadio-Hinweise zu Vercel, RadioKing, Google Fonts und lokaler Merkliste ergänzt.
+- Vor offiziellem Launch: Rechtstexte für den tatsächlichen Betrieb final prüfen, echten Sendeplan eintragen, Vorschauhinweise entfernen, robots-Meta von noindex auf index umstellen, Domain samt DNS in Vercel verbinden.
+- Fünf gelieferte Partnerlogos im pausierbaren Endlos-Slider. Prominenter Hauptplayer und unterer Player steuern dasselbe Audioelement.
+- Permissions-Policy gestattet Mikrofonzugriff für https://widget.radioking.io; zusätzlich iframe allow="microphone".
 
 ## Dateien
 
