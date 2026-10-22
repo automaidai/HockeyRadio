@@ -45,10 +45,51 @@ const programs=[
   {time:'18:00 – 24:00',title:'ABEND AUF EIS',art:'ABEND<br><span>AUF EIS.</span>',kind:'EVENING / MUSIK',text:'Dein Soundtrack nach der Schlusssirene.'}
 ];
 let selectedDay=0;
+let programmeWeek=weekdays.map(()=>programs.map(p=>({...p,draft:!p.hourly})));
+const programmeCacheKey='hockeyradio-programme-v1';
+const escapeHTML=value=>String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function decorateProgram(p,index){
+  const known=programs.find(original=>original.title===p.title.toUpperCase());
+  return {...p,title:p.title.toUpperCase(),art:known?.art||escapeHTML(p.title.toUpperCase()),
+    kind:known?.kind||(p.hourly?'NEWS / EISHOCKEY':'HOCKEYRADIO / MUSIK'),artIndex:known?Math.max(0,programs.indexOf(known)-1):index%4};
+}
+function validProgramme(week){return Array.isArray(week)&&week.length===7&&week.every(day=>Array.isArray(day)&&day.length<=60&&day.every(p=>p&&typeof p.title==='string'&&typeof p.text==='string'&&typeof p.time==='string'&&typeof p.hourly==='boolean'&&typeof p.draft==='boolean'));}
+try{
+  const cached=JSON.parse(localStorage.getItem(programmeCacheKey));
+  if(cached&&Date.now()-cached.at<86400000&&validProgramme(cached.week))programmeWeek=cached.week;
+}catch{}
 const dialog=document.querySelector('#info-dialog'),dialogTitle=document.querySelector('#dialog-title'),dialogBody=document.querySelector('#dialog-body');
 function showDialog(title,body){dialogTitle.textContent=title;dialogBody.innerHTML=body;dialog.showModal();}
-function renderProgram(){document.querySelector('#program-grid').innerHTML=programs.map((p,i)=>`<button class="program-card" data-program="${i}" aria-label="${weekdays[selectedDay]}: ${p.title}, ${p.time}${p.hourly?'':' Uhr'} – ${p.hourly?'Programmpunkt':'Beispielsendung'} ansehen"><div class="card-art art-${Math.max(0,i-1)}"><span class="card-time">${p.time}${p.hourly?'':' UHR'}</span><span class="art-word">${p.art}</span><span class="card-kind">${p.kind}</span></div><div class="card-body"><h3>${p.title}</h3><p>${p.text}</p><div class="card-footer"><span>${weekdays[selectedDay]} · ${p.hourly?'Eishockey-News':'Beispielsendung'}</span><b>↗</b></div></div></button>`).join('');
-  document.querySelectorAll('[data-program]').forEach(button=>button.addEventListener('click',()=>{const p=programs[Number(button.dataset.program)];showDialog(p.title,`<p class="eyebrow">${weekdays[selectedDay]} · ${p.time}${p.hourly?'':' Uhr'}</p><p>${p.text}</p><p class="dialog-note">${p.hourly?'Unsere stündliche News-Rubrik. Die genaue Sendeminute wird noch bekannt gegeben.':'Programmidee in der Website-Vorschau. Diese Sendung und ihre Uhrzeit sind noch nicht redaktionell bestätigt.'}</p><p>Den echten HockeyRadio-Livestream kannst du jederzeit über den Player unten starten.</p>`);}));}
+function renderProgram(){
+  const day=programmeWeek[selectedDay].map(decorateProgram);
+  document.querySelector('.draft-label').textContent=day.some(p=>p.draft)?'PROGRAMM-ENTWURF':'WOCHENPROGRAMM';
+  const intro=document.querySelector('#programm > p');
+  if(intro)intro.textContent=day.some(p=>p.draft)?'So könnte dein Radiotag klingen. Die Sendungen und Zeiten sind Beispiele; das finale Programm folgt.':'Dein Programm für '+weekdays[selectedDay]+'. Alle Zeiten in deutscher Ortszeit.';
+  document.querySelector('#program-grid').innerHTML=day.length?day.map((p,i)=>`<button class="program-card" data-program="${i}" aria-label="${weekdays[selectedDay]}: ${escapeHTML(p.title)}, ${escapeHTML(p.time)}${p.hourly?'':' Uhr'} – ${p.draft?'Beispielsendung':'Programmpunkt'} ansehen"><div class="card-art art-${p.artIndex??Math.max(0,i-1)}"><span class="card-time">${escapeHTML(p.time)}${p.hourly?'':' UHR'}</span><span class="art-word">${p.art}</span><span class="card-kind">${p.kind}</span></div><div class="card-body"><h3>${escapeHTML(p.title)}</h3><p>${escapeHTML(p.text)}</p><div class="card-footer"><span>${weekdays[selectedDay]} · ${p.hourly?'Eishockey-News':p.draft?'Beispielsendung':'Sendung'}</span><b>↗</b></div></div></button>`).join(''):'<p>Für diesen Tag sind noch keine Sendungen eingetragen.</p>';
+  document.querySelectorAll('[data-program]').forEach(button=>button.addEventListener('click',()=>{
+    const p=day[Number(button.dataset.program)];
+    showDialog(p.title,`<p class="eyebrow">${weekdays[selectedDay]} · ${escapeHTML(p.time)}${p.hourly?'':' Uhr'}</p><p>${escapeHTML(p.text)}</p>${p.draft?'<p class="dialog-note">Programmidee in der Website-Vorschau. Diese Sendung und ihre Uhrzeit sind noch nicht redaktionell bestätigt.</p>':p.hourly?'<p class="dialog-note">Unsere stündliche News-Rubrik.</p>':''}<p>Den HockeyRadio-Livestream kannst du jederzeit über den Player unten starten.</p>`);
+  }));
+}
+let refreshingProgramme=false;
+async function refreshProgramme(){
+  if(refreshingProgramme||document.hidden)return;
+  refreshingProgramme=true;
+  try{
+    const response=await fetch('/api/program',{cache:'no-store',signal:AbortSignal.timeout(15000)});
+    if(!response.ok)throw new Error('Programme unavailable');
+    const data=await response.json();
+    if(!validProgramme(data.week))throw new Error('Invalid programme');
+    const changed=JSON.stringify(programmeWeek)!==JSON.stringify(data.week);
+    programmeWeek=data.week;
+    try{localStorage.setItem(programmeCacheKey,JSON.stringify({week:data.week,at:Date.now()}));}catch{}
+    if(changed)renderProgram();
+  }catch{/* Keep the last valid programme and leave the radio uninterrupted. */}
+  finally{refreshingProgramme=false;}
+}
+setInterval(refreshProgramme,60000);
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)refreshProgramme();});
+refreshProgramme();
 document.querySelectorAll('[data-day]').forEach(button=>button.addEventListener('click',()=>{selectedDay=Number(button.dataset.day);document.querySelectorAll('[data-day]').forEach(b=>b.setAttribute('aria-pressed',String(b===button)));renderProgram();}));
 selectedDay=(new Date(new Date().toLocaleString('en-US',{timeZone:'Europe/Berlin'})).getDay()+6)%7;
 document.querySelectorAll('[data-day]').forEach(b=>b.setAttribute('aria-pressed',String(Number(b.dataset.day)===selectedDay)));renderProgram();

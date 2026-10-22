@@ -26,3 +26,20 @@ Arena-Motiv mit dem integrierten Imagegen-Tool generiert. Prompt: Atmosphärisch
 ## Lokal prüfen
 
 Mit einem statischen HTTP-Server aus diesem Verzeichnis starten, beispielsweise `python3 -m http.server 4173`. Mikrofonfunktionen benötigen HTTPS oder localhost.
+
+
+## Programm aus Google Sheets
+
+Redaktion: https://docs.google.com/spreadsheets/d/1ixwQOZKarw2xRhHxnXsQ8CrZ1LBAoBM1J3lvg-pZEt8/edit
+
+Das Blatt `Wochenplan` ist als CSV veröffentlicht, automatisches Neuveröffentlichen ist aktiviert. Nur Programminhalte gehören auf dieses öffentliche Blatt. Neue weitere Blätter werden nicht automatisch veröffentlicht.
+
+- Spalten A–H: Tag, Reihenfolge, Rhythmus, Von, Bis, Sendung, Beschreibung, Stand. Kopfzeile erhalten.
+- Für jeden Wochentag eigene Zeilen. Reihenfolge als positive Zahl eintragen.
+- `Stündlich` zeigt `JEDE STUNDE`; für tägliche Sendungen Zeiten wie `06:00` und `24:00` eintragen.
+- `Entwurf` kennzeichnet eine Beispielsendung, `Vorgabe`/`Bestätigt` eine reguläre Sendung. `Inaktiv`, `Ausgeblendet` oder `Pausiert` blendet eine Zeile aus.
+- Titel und Beschreibung sowie zusätzliche Zeilen werden übernommen; das vorhandene Kartendesign bleibt erhalten.
+- `/api/program` liest das veröffentlichte Blatt serverseitig, validiert die Daten und liefert JSON. Keine Besucheranfragen an Google nötig. `PROGRAM_CSV_URL` kann optional die feste Quelle überschreiben.
+- Website prüft beim Öffnen und danach jede Minute im sichtbaren Tab. Server/CDN puffern jeweils bis zu einer Minute; Googles Veröffentlichung kann zusätzlich einige Minuten dauern. Kein erneuter Website-Deploy für Inhaltsänderungen nötig.
+- Bei ungültigen Zeilen oder Google-Ausfällen bleibt das letzte gültige Programm sichtbar (Server und Browser bis 24 Stunden, anschließend mitgelieferter Ausgangsplan).
+- Keine Zugangsdaten oder Bearbeitungsrechte werden öffentlich gemacht.
