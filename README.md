@@ -43,3 +43,12 @@ Das Blatt `Wochenplan` ist als CSV veröffentlicht, automatisches Neuveröffentl
 - Website prüft beim Öffnen und danach jede Minute im sichtbaren Tab. Server/CDN puffern jeweils bis zu einer Minute; Googles Veröffentlichung kann zusätzlich einige Minuten dauern. Kein erneuter Website-Deploy für Inhaltsänderungen nötig.
 - Bei ungültigen Zeilen oder Google-Ausfällen bleibt das letzte gültige Programm sichtbar (Server und Browser bis 24 Stunden, anschließend mitgelieferter Ausgangsplan).
 - Keine Zugangsdaten oder Bearbeitungsrechte werden öffentlich gemacht.
+
+## Programm, Infos und Live-Markierung
+
+- Kompakte Programmkarten und Umschalter Programm / Infos. Infos erscheinen als schlichte Liste ohne Artwork-Karten.
+- `schedule.js` berechnet die aktuelle Sendung nach Europe/Berlin einschließlich Zeitumstellung, Mitternacht und Sendungen über Tagesgrenzen. Intervalle sind am Ende exklusiv; stündliche Rubriken ohne genaue Sendeminute werden nicht durchgehend live markiert.
+- Die Liveanzeige basiert auf dem Sendeplan, nicht auf einer Audioanalyse. Sie wird im sichtbaren Tab alle 15 Sekunden und beim Zurückkehren aktualisiert.
+- Für Infos gibt es das separate öffentliche Blatt `Website-Infos` (gid 20261023), mit Zustimmung des Nutzers veröffentlicht. Es enthält ausschließlich Formeln auf die Spalten A:D des internen `Einspieler`-Tabs und technische Typkennzeichen. Sponsor, Vermarktung, Preis und Notizen werden nicht übernommen. Nur `Wochenplan` und `Website-Infos` sind veröffentlicht.
+- Die Redaktion pflegt weiterhin `Einspieler`: Formatkatalog A7:D10 und Slotplan A14:D120. Die öffentliche Leseansicht zieht diese Angaben per Formel nach; nicht manuell überschreiben.
+- `/api/infos` validiert die fünf öffentlichen Spalten und gruppiert Einspieler. Live-Markierungen für Einspieler setzen einen zugeordneten Slot, gültige Wochentage und Dauer in Sekunden voraus. Fehlende Slotangaben können die Werte aus dem Formatkatalog übernehmen. Unterstützt sind etwa Täglich, Mo-Fr, Sa / So und einzelne deutsche Wochentage.
