@@ -42,13 +42,13 @@ const programs=[
   {time:'06:00 – 10:00',title:'DIE FRÜHSCHICHT',art:'ERSTES<br><span>BULLY.</span>',kind:'MORNING / MUSIK',text:'Mit Energie und deinem Sound in den Tag.'},
   {time:'10:00 – 14:00',title:'HOCKEY & HITS',art:'HOCKEY<br><span>& HITS.</span>',kind:'DAYTIME / MUSIK',text:'Der Musikmix für deinen Eishockeyalltag.'},
   {time:'14:00 – 18:00',title:'DIE DRITTELPAUSE',art:'DRITTEL<br><span>PAUSE.</span>',kind:'AFTERNOON / MUSIK',text:'Kopf frei, Musik an. Dein Nachmittag.'},
-  {time:'18:00 – 24:00',title:'ABEND AUF EIS',art:'ABEND<br><span>AUF EIS.</span>',kind:'EVENING / MUSIK',text:'Dein Soundtrack nach der Schlusssirene.'}
+  {time:'18:00 – 24:00',title:'OVERTIME',art:'OVER<br><span>TIME.</span>',kind:'EVENING / MUSIK',text:'Dein Soundtrack nach der Schlusssirene.'}
 ];
 let selectedDay=HockeySchedule.berlinTime().day;
 let currentView="programme",followToday=true,clockDay=selectedDay;
 let infoFormats=[],infosState="loading";
-let programmeWeek=weekdays.map(()=>programs.map(p=>({...p,draft:!p.hourly})));
-const programmeCacheKey='hockeyradio-programme-v1';
+let programmeWeek=HOCKEY_PROGRAMME;
+const programmeCacheKey='hockeyradio-programme-v2';
 const escapeHTML=value=>String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function decorateProgram(p,index){
   const known=programs.find(original=>original.title===p.title.toUpperCase());
@@ -81,26 +81,26 @@ function visibleInfos(){
     const explicitDays=[...new Set(slots.flatMap(slot=>slot.days.length?slot.days:[]))];
     const days=explicitDays.length?explicitDays:format.days;
     return {...format,title:format.title.toUpperCase(),text:infoDescriptions[format.title.toLowerCase()]||'Deine kurzen Infos bei HockeyRadio.',
-      time:times.length?times.join(' / '):'TERMINE FOLGEN',hourly:false,draft:false,art:infoArt[format.title.toLowerCase()]||escapeHTML(format.title.toUpperCase()),artIndex:index%4,kind:'INFOS / EINSPIELER',
-      daysNote:!days.length?'Wochentage noch offen':days.length===7?'Täglich':days.map(d=>weekdays[d].slice(0,2)).join(' / '),
+      time:times.length?times.join(' / '):'RUBRIK',hourly:false,draft:false,art:infoArt[format.title.toLowerCase()]||escapeHTML(format.title.toUpperCase()),artIndex:index%4,kind:'INFOS',
+      daysNote:!days.length?'':days.length===7?'Täglich':days.map(d=>weekdays[d].slice(0,2)).join(' / '),
       hasTiming:slots.some(slot=>slot.days.length&&slot.duration>0)};
   });
 }
 function renderProgram(){
   const infos=currentView==='infos',day=infos?visibleInfos():programmeWeek[selectedDay].map(decorateProgram);
   document.querySelector('#program-grid').classList.toggle('is-infos',infos);
-  document.querySelector('.draft-label').textContent=infos?'INFOS':day.some(p=>p.draft)?'PROGRAMM-ENTWURF':'WOCHENPROGRAMM';
+  document.querySelector('.draft-label').textContent=infos?'INFOS':'WOCHENPROGRAMM';
   const intro=document.querySelector('#programm > p');
-  if(intro)intro.textContent=infos?'Deine kurzen Infos zwischen Musik und Eishockey. Die Sendetermine ergänzen wir hier laufend.':day.some(p=>p.draft)?'So könnte dein Radiotag klingen. Die Sendungen und Zeiten sind Beispiele; das finale Programm folgt.':'Dein Programm für '+weekdays[selectedDay]+'. Alle Zeiten in deutscher Ortszeit.';
+  if(intro)intro.textContent=infos?'Eishockeywetter, Eisblog, Equipment und Food & Pucks – unsere kurzen Rubriken zwischen Musik und Eishockey.':'Dein Programm für '+weekdays[selectedDay]+'. Alle Zeiten in deutscher Ortszeit.';
   document.querySelectorAll('[data-view]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.view===currentView)));
   document.querySelector('#program-grid').innerHTML=day.length?day.map((p,i)=>{
     const label=`${weekdays[selectedDay]}: ${p.title}, ${p.time}${p.hourly||infos?'':' Uhr'} ansehen`;
     if(infos)return `<button class="program-card info-row" data-program="${i}" data-base-label="${escapeHTML(label)}" aria-label="${escapeHTML(label)}"><span class="info-time">${escapeHTML(p.time)}</span><span class="info-content"><span class="live-badge" hidden>JETZT LIVE</span><h3>${escapeHTML(p.title).replace(/EISHOCKEYWETTER/g,'EISHOCKEY&shy;WETTER')}</h3><p>${escapeHTML(p.text)}</p><span class="info-days">${escapeHTML(p.daysNote)}</span></span><span class="info-arrow" aria-hidden="true">↗</span></button>`;
-    return `<button class="program-card" data-program="${i}" data-base-label="${escapeHTML(label)}" aria-label="${escapeHTML(label)}"><div class="card-art art-${p.artIndex??Math.max(0,i-1)}${infos?' info-art':''}"><span class="card-time">${escapeHTML(p.time)}${p.hourly||infos?'':' UHR'}</span><span class="art-word">${p.art}</span><span class="card-kind">${p.kind}</span></div><div class="card-body"><span class="live-badge" hidden>JETZT LIVE</span><h3>${escapeHTML(p.title).replace(/EISHOCKEYWETTER/g,'EISHOCKEY&shy;WETTER')}</h3><p>${escapeHTML(p.text)}</p>${infos?`<p class="info-label">${escapeHTML(p.daysNote)}</p>`:''}<div class="card-footer"><span>${infos?'Info-Einspieler':weekdays[selectedDay]+' · '+(p.hourly?'Eishockey-News':p.draft?'Beispielsendung':'Sendung')}</span><b>↗</b></div></div></button>`;
+    return `<button class="program-card" data-program="${i}" data-base-label="${escapeHTML(label)}" aria-label="${escapeHTML(label)}"><div class="card-art art-${p.artIndex??Math.max(0,i-1)}${infos?' info-art':''}"><span class="card-time">${escapeHTML(p.time)}${p.hourly||infos?'':' UHR'}</span><span class="art-word">${p.art}</span><span class="card-kind">${p.kind}</span></div><div class="card-body"><span class="live-badge" hidden>JETZT LIVE</span><h3>${escapeHTML(p.title).replace(/EISHOCKEYWETTER/g,'EISHOCKEY&shy;WETTER')}</h3><p>${escapeHTML(p.text)}</p>${infos?`<p class="info-label">${escapeHTML(p.daysNote)}</p>`:''}<div class="card-footer"><span>${infos?'Info-Einspieler':weekdays[selectedDay]+' · '+(p.hourly?'Eishockey-News':'Sendung')}</span><b>↗</b></div></div></button>`;
   }).join(''):`<p class="programme-empty">${infos?(infosState==='loading'?'Infos werden geladen …':infosState==='error'?'Die Infos sind gerade nicht erreichbar. Bitte später erneut versuchen.':'Die ersten Infos folgen in Kürze.'):'Für diesen Tag sind noch keine Sendungen eingetragen.'}</p>`;
   document.querySelectorAll('[data-program]').forEach(button=>button.addEventListener('click',()=>{
     const p=day[Number(button.dataset.program)];
-    showDialog(p.title,`<p class="eyebrow">${infos?escapeHTML(p.daysNote):weekdays[selectedDay]} · ${escapeHTML(p.time)}${p.hourly||infos?'':' Uhr'}</p><p>${escapeHTML(p.text)}</p>${infos?'<p class="dialog-note">'+(p.hasTiming?'Die angegebenen Zeiten richten sich nach unserem Sendeplan.':'Die genaue Planung wird noch ergänzt. Live-Markierungen erscheinen, sobald Sendetag und Dauer feststehen.')+'</p>':p.draft?'<p class="dialog-note">Programmidee in der Website-Vorschau. Diese Sendung und ihre Uhrzeit sind noch nicht redaktionell bestätigt.</p>':p.hourly?'<p class="dialog-note">Unsere stündliche News-Rubrik.</p>':''}<p>Den HockeyRadio-Livestream kannst du jederzeit über den Player unten starten.</p>`);
+    showDialog(p.title,`<p class="eyebrow">${infos?(p.daysNote?escapeHTML(p.daysNote)+' · ':''):weekdays[selectedDay]+' · '}${escapeHTML(p.time)}${p.hourly||infos?'':' Uhr'}</p><p>${escapeHTML(p.text)}</p>${p.hourly?'<p class="dialog-note">Eure Eishockey-News, jede Stunde bei HockeyRadio.</p>':''}<p>Den HockeyRadio-Livestream kannst du jederzeit über den Player unten starten.</p>`);
   }));
   updateLiveState();
 }

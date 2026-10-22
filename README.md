@@ -56,3 +56,5 @@ Das Blatt `Wochenplan` ist als CSV veröffentlicht, automatisches Neuveröffentl
 ## SpradeTV-Banner
 
 Die früheren Hero-Kennzahlen sind durch einen als Werbung gekennzeichneten SpradeTV-Banner ersetzt. Original-SpradeTV-Logo, „Alle Spiele live in HD“, „Jetzt buchen“, Link https://sprade.tv/de/. Mobil mit eigenem CTA unter Logo und Text.
+
+Content refresh (22.10.2026): Public programme text uses the current Wochenplan, without prototype labels. programme-data.js is a verified 41-entry fallback snapshot. Draft status remains internal to the Sheet; unknown info times are not invented.
