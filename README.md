@@ -52,3 +52,7 @@ Das Blatt `Wochenplan` ist als CSV veröffentlicht, automatisches Neuveröffentl
 - Für Infos gibt es das separate öffentliche Blatt `Website-Infos` (gid 20261023), mit Zustimmung des Nutzers veröffentlicht. Es enthält ausschließlich Formeln auf die Spalten A:D des internen `Einspieler`-Tabs und technische Typkennzeichen. Sponsor, Vermarktung, Preis und Notizen werden nicht übernommen. Nur `Wochenplan` und `Website-Infos` sind veröffentlicht.
 - Die Redaktion pflegt weiterhin `Einspieler`: Formatkatalog A7:D10 und Slotplan A14:D120. Die öffentliche Leseansicht zieht diese Angaben per Formel nach; nicht manuell überschreiben.
 - `/api/infos` validiert die fünf öffentlichen Spalten und gruppiert Einspieler. Live-Markierungen für Einspieler setzen einen zugeordneten Slot, gültige Wochentage und Dauer in Sekunden voraus. Fehlende Slotangaben können die Werte aus dem Formatkatalog übernehmen. Unterstützt sind etwa Täglich, Mo-Fr, Sa / So und einzelne deutsche Wochentage.
+
+## SpradeTV-Banner
+
+Die früheren Hero-Kennzahlen sind durch einen als Werbung gekennzeichneten SpradeTV-Banner ersetzt. Original-SpradeTV-Logo, „Alle Spiele live in HD“, „Jetzt buchen“, Link https://sprade.tv/de/. Mobil mit eigenem CTA unter Logo und Text.
