@@ -73,3 +73,6 @@
 
 /* Sprade blue play button on the ice-white hero player. */
 .hero-radio .hero-play{background:var(--cyan);color:var(--bg);border-color:#fff;box-shadow:0 4px 12px #1689ad33,inset 0 1px 0 #ffffff66,0 0 0 5px #ffffff45}.hero-radio .hero-play:hover{background:#7febff;box-shadow:0 4px 16px #1689ad44,0 0 0 5px #ffffff90}
+
+/* Bring the programme switch into view beneath the opening screen. */
+@media(min-width:761px){.hero{min-height:490px}.hero-greeting{top:130px}.program.section{padding-top:12px}}
