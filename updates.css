@@ -56,3 +56,6 @@
 
 /* Keep the new two-line slogan compact on phones. */
 @media(max-width:600px){.hero h1{font-size:clamp(32px,9.8vw,51px)}}
+
+/* Match the hero introduction to the regular body copy. */
+.hero .intro{font-size:14px;line-height:1.7}
