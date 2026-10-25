@@ -70,3 +70,6 @@
 .hero-radio-info strong{color:#15394f}.hero-radio-info .on-air{color:#235d77}.hero-radio-info .on-air i{background:#0089b1;box-shadow:0 0 7px #00a8d45c}
 .hero-radio .hero-radio-caption{color:#4b6e80}.hero-radio .hero-volume{color:#38657b}.hero-radio .wave i{background:#5398b4}.is-playing .hero-radio .wave i{background:#0088b1}.hero-radio .volume-control{accent-color:#157c9e}
 @media(prefers-reduced-motion:reduce){.hero-radio .hero-play{transition:none}}
+
+/* Sprade blue play button on the ice-white hero player. */
+.hero-radio .hero-play{background:var(--cyan);color:var(--bg);border-color:#fff;box-shadow:0 4px 12px #1689ad33,inset 0 1px 0 #ffffff66,0 0 0 5px #ffffff45}.hero-radio .hero-play:hover{background:#7febff;box-shadow:0 4px 16px #1689ad44,0 0 0 5px #ffffff90}
