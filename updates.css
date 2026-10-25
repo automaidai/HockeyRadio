@@ -59,3 +59,14 @@
 
 /* Match the hero introduction to the regular body copy. */
 .hero .intro{font-size:14px;line-height:1.7}
+
+/* Frosted ice treatment for the prominent hero player. */
+.hero-radio{position:relative;isolation:isolate;overflow:hidden;background:linear-gradient(112deg,#fff 0%,#eefaff 38%,#d9f2fb 75%,#f9feff 100%);border:1px solid #efffff;border-top-color:#fff;box-shadow:0 15px 38px #020e2c45,0 0 28px #a2eaff1c,inset 0 2px 0 #fff,inset 0 -2px 9px #79c6e144;color:#14354c}
+.hero-radio:before{content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;background:repeating-linear-gradient(114deg,transparent 0 29px,#fff6 30px,transparent 31px 74px),repeating-linear-gradient(21deg,transparent 0 43px,#84bad71b 44px,transparent 45px 91px);opacity:.65}
+.hero-radio:after{content:'';position:absolute;right:-16px;top:-38px;width:190px;height:180px;z-index:-1;pointer-events:none;background:conic-gradient(from 28deg at 60% 46%,transparent 0 44deg,#fff9 45deg 46deg,transparent 47deg 110deg,#a1d8eb66 111deg 112deg,transparent 113deg 188deg,#fff 189deg 190deg,transparent 191deg 267deg,#fff9 268deg 269deg,transparent 270deg),linear-gradient(142deg,transparent 42%,#fff9 42.4%,transparent 43.1%);opacity:.8}
+.hero-radio .hero-play{background:linear-gradient(145deg,#fff,#c2ebf7);color:#123d58;border:2px solid #fff;box-shadow:0 4px 12px #3473972b,inset 0 -3px 7px #66b6d54a,0 0 0 5px #ffffff45;transition:background .2s,box-shadow .2s}
+.hero-radio .hero-play:hover{background:#fff;box-shadow:0 4px 16px #34739740,0 0 0 5px #ffffff90}
+.hero-radio .hero-play:focus-visible{outline:3px solid #125471;outline-offset:5px}
+.hero-radio-info strong{color:#15394f}.hero-radio-info .on-air{color:#235d77}.hero-radio-info .on-air i{background:#0089b1;box-shadow:0 0 7px #00a8d45c}
+.hero-radio .hero-radio-caption{color:#4b6e80}.hero-radio .hero-volume{color:#38657b}.hero-radio .wave i{background:#5398b4}.is-playing .hero-radio .wave i{background:#0088b1}.hero-radio .volume-control{accent-color:#157c9e}
+@media(prefers-reduced-motion:reduce){.hero-radio .hero-play{transition:none}}
