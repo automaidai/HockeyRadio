@@ -89,9 +89,6 @@ function visibleInfos(){
 function renderProgram(){
   const infos=currentView==='infos',day=infos?visibleInfos():programmeWeek[selectedDay].map(decorateProgram);
   document.querySelector('#program-grid').classList.toggle('is-infos',infos);
-  document.querySelector('.draft-label').textContent=infos?'INFOS':'WOCHENPROGRAMM';
-  const intro=document.querySelector('#programm > p');
-  if(intro)intro.textContent=infos?'Eishockeywetter, Eisblog, Equipment und Food & Pucks – unsere kurzen Rubriken zwischen Musik und Eishockey.':'Dein Programm für '+weekdays[selectedDay]+'. Alle Zeiten in deutscher Ortszeit.';
   document.querySelectorAll('[data-view]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.view===currentView)));
   document.querySelector('#program-grid').innerHTML=day.length?day.map((p,i)=>{
     const label=`${weekdays[selectedDay]}: ${p.title}, ${p.time}${p.hourly||infos?'':' Uhr'} ansehen`;
