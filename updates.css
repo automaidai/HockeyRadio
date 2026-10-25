@@ -48,4 +48,4 @@
 
 /* Tighter transition from the hero to the programme controls. */
 .hero{min-height:640px}.program.section{padding-top:28px;padding-bottom:44px}.program .program-tools{margin-top:0}
-@media(max-width:760px){.hero{min-height:0}.hero-content{padding-bottom:0}.hero-greeting{margin-bottom:60px}.program.section{padding-top:22px;padding-bottom:32px}}
+@media(max-width:760px){.hero{min-height:0}.hero-content{padding-bottom:0}.hero-greeting{margin-bottom:80px}.program.section{padding-top:22px;padding-bottom:32px}}
