@@ -52,7 +52,7 @@ const programmeCacheKey='hockeyradio-programme-v2';
 const escapeHTML=value=>String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function decorateProgram(p,index){
   const known=programs.find(original=>original.title===p.title.toUpperCase());
-  return {...p,title:p.title.toUpperCase(),art:known?.art||escapeHTML(p.title.toUpperCase()),
+  return {...p,title:p.title.toUpperCase(),art:/^(die|das) eishockeynews$/i.test(p.title.trim())?'<img src="partner-eishockeynews.svg" alt="Eishockey NEWS" width="240" height="80" style="display:block;width:240px;max-width:100%;height:auto;filter:brightness(0) invert(1) drop-shadow(4px 4px 0 #05d9ff40)">':known?.art||escapeHTML(p.title.toUpperCase()),
     kind:known?.kind||(p.hourly?'NEWS / EISHOCKEY':'HOCKEYRADIO / MUSIK'),artIndex:known?Math.max(0,programs.indexOf(known)-1):index%4};
 }
 function validProgramme(week){return Array.isArray(week)&&week.length===7&&week.every(day=>Array.isArray(day)&&day.length<=60&&day.every(p=>p&&typeof p.title==='string'&&typeof p.text==='string'&&typeof p.time==='string'&&typeof p.hourly==='boolean'&&typeof p.draft==='boolean'));}
