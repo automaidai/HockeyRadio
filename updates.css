@@ -96,3 +96,8 @@
 .program-grid:not(.is-infos) .card-footer{font-size:8px;padding-top:9px}
 .program-grid:not(.is-infos) .live-badge{font-size:7px;padding:3px 5px;margin-bottom:5px}
 .program-grid:not(.is-infos) .program-card:focus-visible{outline:2px solid var(--cyan);outline-offset:1px}
+
+/* Bring the station introduction closer to the weekly programme. */
+.program.section{padding-bottom:18px}
+#sender.section{padding-top:24px}
+@media(max-width:760px){.program.section{padding-bottom:12px}#sender.section{padding-top:20px}}
