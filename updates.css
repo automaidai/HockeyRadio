@@ -76,3 +76,23 @@
 
 /* Bring the programme switch into view beneath the opening screen. */
 @media(min-width:761px){.hero{min-height:490px}.hero-greeting{top:130px}.program.section{padding-top:12px}}
+
+/* One compact programme row, with horizontal swiping on narrow screens. */
+.program-grid:not(.is-infos){
+  display:grid;grid-template-columns:none;grid-template-rows:auto;
+  grid-auto-flow:column;grid-auto-columns:148px;gap:10px;
+  overflow-x:auto;overscroll-behavior-x:contain;scroll-snap-type:x proximity;
+  scroll-padding-inline:3px;padding:3px 3px 14px;
+  scrollbar-width:thin;scrollbar-color:var(--cyan) transparent;
+}
+.program-grid:not(.is-infos) .program-card{scroll-snap-align:start;border-radius:9px}
+.program-grid:not(.is-infos) .card-art{height:91px}
+.program-grid:not(.is-infos) .card-art .art-word{font-size:23px;max-width:86%}
+.program-grid:not(.is-infos) .card-time{font-size:8px;top:6px;left:6px}
+.program-grid:not(.is-infos) .card-kind{font-size:6px;letter-spacing:.7px}
+.program-grid:not(.is-infos) .card-body{padding:10px 9px}
+.program-grid:not(.is-infos) .card-body h3{font-size:18px;margin-bottom:5px}
+.program-grid:not(.is-infos) .card-body p{font-size:10px;line-height:1.5}
+.program-grid:not(.is-infos) .card-footer{font-size:8px;padding-top:9px}
+.program-grid:not(.is-infos) .live-badge{font-size:7px;padding:3px 5px;margin-bottom:5px}
+.program-grid:not(.is-infos) .program-card:focus-visible{outline:2px solid var(--cyan);outline-offset:1px}
