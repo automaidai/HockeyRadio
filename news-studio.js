@@ -18,6 +18,7 @@ $('topic-field').hidden=!studio.topic;
 $('details-field').hidden=studio.topic;
 $('news-format-field').hidden=!studio.topic;
 $('news-music-field').hidden=!studio.topic;
+$('news-partner-logo').hidden=!studio.topic;
 $('custom-music-field').hidden=studio.topic;
 const selectedNewsFormat=()=>document.querySelector('input[name="newsFormat"]:checked')?.value||'weekend';
 const newsTracks={weekend:{name:'News Background',path:'/assets/studio-music/News_Background.mp3'},midweek:{name:'Powerplay News Background',path:'/assets/studio-music/Powerplay_News_Background.mp3'}};
