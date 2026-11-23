@@ -17,6 +17,24 @@
           "value": "microphone=(self \"https://widget.radioking.io\"), camera=(), geolocation=()"
         }
       ]
+    },
+    {
+      "source": "/eishockeynews",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow, noarchive"
+        }
+      ]
+    },
+    {
+      "source": "/aufnahmestudios",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow, noarchive"
+        }
+      ]
     }
   ]
 }
