@@ -1,7 +1,7 @@
 'use strict';
 const $=id=>document.getElementById(id);
 const studios={
- news:{label:'News',headline:'Eure News.',second:'Unsere Eiszeit.',intro:'Nimm deinen Newsbeitrag direkt im Browser auf, mische auf Wunsch Musik dazu und sende die fertige MP3 an die Redaktion.',hint:'Wähle den News-Bereich aus und starte, wenn du bereit bist.',topic:true},
+ news:{label:'News',headline:'',second:'',intro:'',hint:'Wähle den News-Bereich aus und starte, wenn du bereit bist.',topic:true},
  ergebnisse:{label:'Ergebnisse',headline:'Die Resultate.',second:'Klar auf den Punkt.',intro:'Sprich Spielstände und Endergebnisse ein. Hör deine Aufnahme vor dem Versand an und sende sie direkt an die HockeyRadio-Redaktion.',hint:'Ergänze optional Team, Spiel oder Anlass.',topic:false},
  spielankuendigungen:{label:'Spielankündigungen',headline:'Das nächste Spiel.',second:'Dein Vorbericht.',intro:'Kündige kommende Begegnungen und Spieltage an. Nimm deinen Beitrag direkt im Browser auf und sende ihn an die Redaktion.',hint:'Ergänze optional Teams, Liga oder Spieltag.',topic:false},
  ergebnisticker:{label:'Ergebnisticker',headline:'Der Spielstand.',second:'Immer auf dem Laufenden.',intro:'Sprich kurze Zwischenstände und Updates rund ums Spiel ein. Erstelle eine MP3 und sende sie direkt an die Redaktion.',hint:'Ergänze optional Team, Spielstand oder Spielminute.',topic:false},
@@ -9,7 +9,9 @@ const studios={
 };
 const params=new URLSearchParams(location.search),studioKey=params.get('studio')||'news',studio=studios[studioKey]||studios.news;
 $('studio-kicker').textContent=`HOCKEYRADIO · ${studio.label.toUpperCase()}`;
-$('studio-title').innerHTML=`${studio.headline}<br><span>${studio.second}</span>`;
+$('studio-title').hidden=!studio.headline;
+if(studio.headline)$('studio-title').innerHTML=`${studio.headline}<br><span>${studio.second}</span>`;
+$('studio-intro').hidden=!studio.intro;
 $('studio-intro').textContent=studio.intro;
 $('studio-hint').textContent=studio.hint;
 $('topic-field').hidden=!studio.topic;
