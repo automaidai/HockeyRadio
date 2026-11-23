@@ -4,7 +4,6 @@ module.exports=async(req,res)=>{
  if(req.method!=='POST'){res.setHeader('Allow','POST');return res.status(405).json({error:'Nur POST erlaubt.'});}
  const origin=req.headers.origin;
  if(!origin||!['https:','http:'].includes((()=>{try{return new URL(origin).protocol;}catch{return '';}})())||new URL(origin).host!==req.headers.host)return res.status(403).json({error:'Ungültige Anfrage.'});
- if(!process.env.RESEND_API_KEY||!process.env.NEWS_MAIL_FROM)return res.status(503).json({error:'Der Mailversand ist noch nicht eingerichtet. Bitte MP3 herunterladen.'});
  let body=req.body;try{if(typeof body==='string')body=JSON.parse(body);}catch{return res.status(400).json({error:'Ungültige Daten.'});}
  const {studio='news',topic,newsFormat,filename,details='',content,key}=body||{};
  const studios={news:'Eishockey NEWS',ergebnisse:'Ergebnisse',spielankuendigungen:'Spielankündigungen',ergebnisticker:'Ergebnisticker',stadionreporter:'Stadion Reporter'};
@@ -18,5 +17,15 @@ module.exports=async(req,res)=>{
  const detailLine=details.trim()?`Zusätzliche Angabe: ${details.trim()}\n`:'';
  const safeName=studio.replace(/[^a-z0-9-]/gi,'-');
  const attachmentName=studio==='news'?filename:`HockeyRadio-${safeName}-${date}.mp3`;
- try{const response=await fetch('https://api.resend.com/emails',{method:'POST',signal:AbortSignal.timeout(20000),headers:{Authorization:`Bearer ${process.env.RESEND_API_KEY}`,'Content-Type':'application/json','Idempotency-Key':`${studio}-${newsFormat||'none'}-${key}`},body:JSON.stringify({from:process.env.NEWS_MAIL_FROM,to:['info@hockey-radio.com'],subject:`${studios[studio]}${topicLabel} – ${date}`,text:`Neuer gesprochener Beitrag aus dem Studio „${studios[studio]}“.${studio==='news'?` Format: ${newsFormats[newsFormat]}. Bereich: ${topic}.`:''}\n${detailLine}Datum: ${date}. Die MP3 befindet sich im Anhang.`,attachments:[{filename:attachmentName,content}]})});if(!response.ok)throw Error('provider');return res.status(200).json({ok:true});}catch{return res.status(502).json({error:'Der Maildienst ist momentan nicht erreichbar. Bitte erneut versuchen.'});}
+ const hasMakeConfig=Boolean(process.env.NEWS_MAKE_WEBHOOK_URL||process.env.NEWS_WEBHOOK_API_KEY);
+ if(hasMakeConfig){
+  if(!process.env.NEWS_MAKE_WEBHOOK_URL||!process.env.NEWS_WEBHOOK_API_KEY)return res.status(503).json({error:'Die automatische Ablage ist noch nicht vollständig eingerichtet. Bitte MP3 herunterladen.'});
+  try{
+   const response=await fetch(process.env.NEWS_MAKE_WEBHOOK_URL,{method:'POST',signal:AbortSignal.timeout(20000),headers:{'Content-Type':'application/json','x-make-apikey':process.env.NEWS_WEBHOOK_API_KEY},body:JSON.stringify({studio,topic,newsFormat,filename:attachmentName,details:details.trim(),content,key})});
+   if(!response.ok)throw Error('webhook');
+   return res.status(200).json({ok:true,destination:'drive'});
+  }catch{return res.status(502).json({error:'Die automatische Ablage ist momentan nicht erreichbar. Bitte MP3 herunterladen und später erneut senden.'});}
+ }
+ if(!process.env.RESEND_API_KEY||!process.env.NEWS_MAIL_FROM)return res.status(503).json({error:'Die automatische Ablage ist noch nicht eingerichtet. Bitte MP3 herunterladen.'});
+ try{const response=await fetch('https://api.resend.com/emails',{method:'POST',signal:AbortSignal.timeout(20000),headers:{Authorization:`Bearer ${process.env.RESEND_API_KEY}`,'Content-Type':'application/json','Idempotency-Key':`${studio}-${newsFormat||'none'}-${key}`},body:JSON.stringify({from:process.env.NEWS_MAIL_FROM,to:['info@hockey-radio.com'],subject:`${studios[studio]}${topicLabel} – ${date}`,text:`Neuer gesprochener Beitrag aus dem Studio „${studios[studio]}“.${studio==='news'?` Format: ${newsFormats[newsFormat]}. Bereich: ${topic}.`:''}\n${detailLine}Datum: ${date}. Die MP3 befindet sich im Anhang.`,attachments:[{filename:attachmentName,content}]})});if(!response.ok)throw Error('provider');return res.status(200).json({ok:true,destination:'email'});}catch{return res.status(502).json({error:'Der Maildienst ist momentan nicht erreichbar. Bitte erneut versuchen.'});}
 };
