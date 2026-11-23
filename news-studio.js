@@ -3,9 +3,9 @@ const $=id=>document.getElementById(id);
 const studios={
  news:{label:'News',headline:'',second:'',intro:'',hint:'Wähle den News-Bereich aus und starte, wenn du bereit bist.',topic:true},
  ergebnisse:{label:'Ergebnisse',headline:'',second:'',intro:'',hint:'Ergänze optional Team, Spiel oder Anlass.',topic:false},
- spielankuendigungen:{label:'Spielankündigungen',headline:'Das nächste Spiel.',second:'Dein Vorbericht.',intro:'Kündige kommende Begegnungen und Spieltage an. Nimm deinen Beitrag direkt im Browser auf und sende ihn an die Redaktion.',hint:'Ergänze optional Teams, Liga oder Spieltag.',topic:false},
- ergebnisticker:{label:'Ergebnisticker',headline:'Der Spielstand.',second:'Immer auf dem Laufenden.',intro:'Sprich kurze Zwischenstände und Updates rund ums Spiel ein. Erstelle eine MP3 und sende sie direkt an die Redaktion.',hint:'Ergänze optional Team, Spielstand oder Spielminute.',topic:false},
- stadionreporter:{label:'Stadion Reporter',headline:'Direkt aus der Halle.',second:'Mitten im Spiel.',intro:'Teile Stimmen, Eindrücke und Atmosphäre aus dem Stadion. Nimm deinen Beitrag auf und sende ihn an die Redaktion.',hint:'Ergänze optional Halle, Teams oder Anlass.',topic:false}
+ spielankuendigungen:{label:'Spielankündigungen',headline:'',second:'',intro:'',hint:'Ergänze optional Teams, Liga oder Spieltag.',topic:false},
+ ergebnisticker:{label:'Ergebnisticker',headline:'',second:'',intro:'',hint:'Ergänze optional Team, Spielstand oder Spielminute.',topic:false},
+ stadionreporter:{label:'Stadion Reporter',headline:'',second:'',intro:'',hint:'Ergänze optional Halle, Teams oder Anlass.',topic:false}
 };
 const params=new URLSearchParams(location.search),studioKey=params.get('studio')||'news',studio=studios[studioKey]||studios.news;
 $('studio-kicker').textContent=`HOCKEYRADIO · ${studio.label.toUpperCase()}`;
