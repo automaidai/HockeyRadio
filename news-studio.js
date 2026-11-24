@@ -30,7 +30,7 @@ if(studio.leagueSelect){
  const field=document.createElement('div');field.className='field';
  const select=document.createElement('select');select.id='studio-league';select.required=true;
  const prompt=document.createElement('option');prompt.value='';prompt.textContent='Liga auswählen';prompt.disabled=true;prompt.selected=true;select.append(prompt);
- for(const league of ['DEL2','Oberligen','Bayernliga']){const option=document.createElement('option');option.value=league;option.textContent=league;select.append(option);}
+ for(const league of ['DEL2','Oberligen','Bayernliga','Alle Ligen']){const option=document.createElement('option');option.value=league;option.textContent=league;select.append(option);}
  const caption=document.createElement('label');caption.htmlFor=select.id;caption.textContent='Liga';
  select.onchange=()=>{key=crypto.randomUUID();invalidate();};
  field.append(caption,select);$('studio-fields').append(field);
@@ -48,7 +48,7 @@ for(const id of ['voice','bed'])$(id).oninput=()=>{$(id+'Value').textContent=$(i
 $('music').onchange=invalidate;
 $('topic').onchange=()=>{key=crypto.randomUUID();invalidate();};
 function newsFilename(){const parts=Object.fromEntries(new Intl.DateTimeFormat('en-GB',{timeZone:'Europe/Berlin',year:'2-digit',month:'2-digit',day:'2-digit'}).formatToParts().map(part=>[part.type,part.value]));const date=`${parts.year}${parts.month}${parts.day}`;const kind=selectedNewsFormat()==='weekend'?'Bericht_Wochenende':'News';return `${date}_${kind}_${$('topic').value}.mp3`;}
-function studioFilename(){const parts=Object.fromEntries(new Intl.DateTimeFormat('en-GB',{timeZone:'Europe/Berlin',year:'2-digit',month:'2-digit',day:'2-digit'}).formatToParts().map(part=>[part.type,part.value]));const date=`${parts.year}${parts.month}${parts.day}`;return `${studio.label}_${$('studio-league').value}_${date}.mp3`;}
+function studioFilename(){const parts=Object.fromEntries(new Intl.DateTimeFormat('en-GB',{timeZone:'Europe/Berlin',year:'2-digit',month:'2-digit',day:'2-digit'}).formatToParts().map(part=>[part.type,part.value]));const date=`${parts.year}${parts.month}${parts.day}`;const league=$('studio-league').value.replace(/\s+/g,'_');return `${studio.label}_${league}_${date}.mp3`;}
 function lock(value){busy=value;for(const id of ['record','music','voice','bed','topic','details'])$(id).disabled=value;document.querySelectorAll('#studio-fields select,input[name="newsFormat"]').forEach(input=>input.disabled=value);$('mix').disabled=value||!raw;$('send').disabled=value||!mp3;}
 $('record').onclick=async()=>{
  if(raw&&!confirm('Bisherige Aufnahme ersetzen?'))return;
