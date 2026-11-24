@@ -3,7 +3,7 @@ const $=id=>document.getElementById(id);
 const studios={
  news:{label:'News',headline:'Eure News.',second:'Unsere Eiszeit.',intro:'Nimm deinen Beitrag direkt im Browser auf, mische auf Wunsch Musik dazu und sende die fertige MP3 an die Redaktion.',hint:'Wähle den News-Bereich aus und starte, wenn du bereit bist.',topic:true},
  ergebnisse:{label:'Ergebnisse',headline:'Ergebnisse.',second:'',intro:'',hint:'Wähle die Liga für deinen Ergebnisbeitrag.',fixedMusic:true,leagueSelect:true},
- spielankuendigungen:{label:'Spielankündigungen',headline:'Der nächste Spieltag.',second:'',intro:'',hint:'Wähle die Liga für deine Spielankündigung.',fixedMusic:true,leagueSelect:true},
+ spielankuendigungen:{label:'Spielankündigungen',headline:'Spielankündigungen',second:'',intro:'',hint:'Wähle die Liga für deine Spielankündigung.',fixedMusic:true,leagueSelect:true},
  ergebnisticker:{label:'Ergebnisticker',headline:'Ergebnisticker',second:'',intro:'',hint:'Wähle die Liga für dein Ticker-Update.',fixedMusic:true,leagueSelect:true},
  stadionreporter:{label:'Stadion Reporter',headline:'Direkt aus der Halle.',second:'nah am Spiel.',intro:'Nimm deine Eindrücke direkt im Browser auf und sende die fertige MP3 an die Redaktion.',hint:'Ergänze optional Halle, Teams oder Anlass.',topic:false}
 };
