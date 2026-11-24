@@ -58,3 +58,15 @@ Das Blatt `Wochenplan` ist als CSV veröffentlicht, automatisches Neuveröffentl
 Die früheren Hero-Kennzahlen sind durch einen als Werbung gekennzeichneten SpradeTV-Banner ersetzt. Original-SpradeTV-Logo, „Alle Spiele live in HD“, „Jetzt buchen“, Link https://sprade.tv/de/. Mobil mit eigenem CTA unter Logo und Text.
 
 Content refresh (22.10.2026): Public programme text uses the current Wochenplan, without prototype labels. programme-data.js is a verified 41-entry fallback snapshot. Draft status remains internal to the Sheet; unknown info times are not invented.
+
+## Eishockeynews-Aufnahmestudio
+
+Direktlink `/eishockeynews`, ohne Passwort, nicht in der Navigation und mit noindex. Keine vertrauliche Zugriffsbeschränkung: Jeder mit dem Link kann öffnen. Browseraufnahme bis 180 Sekunden, optionale lokal gewählte Musik mit Schleife und Ein-/Ausblendung, getrennte Pegel, Mono-MP3 mit 128 kbit/s über mitgelieferten lamejs 1.2.1 Encoder. Mikrofon benötigt HTTPS. MP3 bleibt bis zum Versand lokal; Musikdateien werden nicht hochgeladen.
+
+Mailversand über Resend: Vercel-Produktionsvariablen `RESEND_API_KEY` und `NEWS_MAIL_FROM` (bei Resend verifizierter Absender) einrichten, anschließend neu deployen. Fester Empfänger info@hockey-radio.com. Ohne Konfiguration liefert die API 503; keine vorgetäuschte Erfolgsmeldung. Idempotenzschlüssel verhindert doppelte Übermittlung derselben Mischung bei Wiederholung innerhalb des Provider-Zeitfensters. Erfolg bestätigt die Annahme beim Maildienst, keine Postfachzustellung. API akzeptiert nur same-origin POST und begrenzte MP3-Anhänge. Vor breiter Weitergabe sollte ein dauerhaftes Versandlimit beim Provider eingerichtet werden, da dieser Bereich ausdrücklich ohne Anmeldung erreichbar ist.
+
+Encoder: https://github.com/zhuker/lamejs (LGPL-3.0), Version 1.2.1, vendor/lame.min.js.
+
+## Redaktions-Aufnahmestudios
+
+Die interne, nicht indexierte Übersichtsseite `/aufnahmestudios` verlinkt zu den Studios News, Ergebnisse, Spielankündigungen, Ergebnisticker und Stadion Reporter. Die drei Studios Ergebnisse, Spielankündigungen und Ergebnisticker sind eigenständige Aufnahmeseiten für Dennis mit einer Liga-Auswahl (DEL2, Oberligen, Bayernliga) und dem festen Musikbett `assets/studio-music/HockeyRadio_Background.mp3`. Die MP3-Dateinamen folgen `Rubrik_Liga_JJMMTT.mp3`, zum Beispiel `Spielankündigungen_DEL2_261124.mp3`. Alle Studios verwenden den gleichen browserbasierten Aufnahme-, Vorschau-, MP3- und Versandablauf. News behält die Liga-Auswahl DEL2, Oberliga oder Bayernliga und seine formatabhängige Musik; Stadion Reporter behält die optionale eigene Musik. Die Studioauswahl erfolgt über den Parameter `studio` auf `/eishockeynews`; ein Aufruf ohne Parameter öffnet weiter das News-Studio.

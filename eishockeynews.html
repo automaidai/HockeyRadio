@@ -33,11 +33,13 @@
           <label class="format-option format-option--midweek"><input type="radio" name="newsFormat" value="midweek"><span><strong>News ab Mittwoch</strong><small>Einsendung bis 22:00 Uhr am Vortag, Integration täglich im Folgetag.</small></span></label>
         </fieldset>
         <div class="field full" id="topic-field"><label for="topic">News-Bereich</label><select id="topic"><option>DEL2</option><option>Oberliga</option><option>Bayernliga</option></select></div>
-        <div class="field full" id="details-field" hidden><label for="details">Zusätzliche Angabe (optional)</label><input id="details" type="text" maxlength="100" placeholder="Zum Beispiel: Team, Spiel oder Anlass"></div>
+        <div class="field full" id="studio-fields" hidden></div>
+        <div class="field full" id="details-field" hidden><label for="details">Zusätzlicher Hinweis (optional)</label><input id="details" type="text" maxlength="100" placeholder="Weiterer Kontext für die Redaktion"></div>
         <div class="field full" id="news-music-field" hidden><label>Automatisch gewählte Hintergrundmusik</label><span class="track-label" id="news-music-name">News Background</span></div>
+        <div class="field full" id="studio-music-field" hidden><label>Festes Musikbett</label><span class="track-label" id="studio-music-name">HockeyRadio Background</span></div>
       </div>
       <div class="recording"><div><div class="timer" id="timer" role="timer" aria-live="off">00:00</div><span class="timer-caption">Maximal 3 Minuten Aufnahmezeit</span></div><div class="controls"><button class="button record" id="record">● Aufnahme starten</button><button class="button secondary" id="stop" disabled>■ Aufnahme beenden</button></div></div>
-      <p class="help">Das Mikrofon wird erst nach deinem Klick aktiviert. Eine neue Aufnahme ersetzt die bisherige. Bitte nutze nur Musik, die für die Ausstrahlung freigegeben ist.</p>
+      <p class="help" id="recording-help">Das Mikrofon wird erst nach deinem Klick aktiviert. Eine neue Aufnahme ersetzt die bisherige. Bitte nutze nur Musik, die für die Ausstrahlung freigegeben ist.</p>
       <div class="field" id="custom-music-field"><label for="music">Eigene Hintergrundmusik (optional)</label><input id="music" type="file" accept="audio/*"><p class="help">Die Musikdatei bleibt auf deinem Gerät und wird nicht separat hochgeladen.</p></div>
       <div class="mixers"><div class="field"><label for="voice">Stimme <output id="voiceValue">100 %</output></label><input id="voice" type="range" min="0" max="150" value="100"></div><div class="field"><label for="bed">Hintergrundmusik <output id="bedValue">15 %</output></label><input id="bed" type="range" min="0" max="50" value="15"></div></div>
       <button class="button secondary" id="mix" disabled>MP3 erstellen & anhören</button>
