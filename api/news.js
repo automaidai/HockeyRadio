@@ -6,8 +6,8 @@ module.exports=async(req,res)=>{
  if(!origin||!['https:','http:'].includes((()=>{try{return new URL(origin).protocol;}catch{return '';}})())||new URL(origin).host!==req.headers.host)return res.status(403).json({error:'Ungültige Anfrage.'});
  let body=req.body;try{if(typeof body==='string')body=JSON.parse(body);}catch{return res.status(400).json({error:'Ungültige Daten.'});}
  const {studio='news',topic,newsFormat,filename,details='',content,key}=body||{};
- const studios={news:'Eishockey NEWS',ergebnisse:'Dennis · Ergebnisse',spielankuendigungen:'Dennis · Spielankündigungen',ergebnisticker:'Dennis · Ergebnisticker',stadionreporter:'Stadion Reporter'};
- const studioFileLabels={ergebnisse:'Ergebnisse',spielankuendigungen:'Spielankündigungen',ergebnisticker:'Ergebnisticker'};
+ const studios={news:'Eishockey NEWS',ergebnisse:'Dennis · Ergebnisse',spielankuendigungen:'Dennis · Spielankündigungen',ergebnisticker:'Dennis · Ticker',stadionreporter:'Stadion Reporter'};
+ const studioFileLabels={ergebnisse:'Ergebnisse',spielankuendigungen:'Spielankündigungen',ergebnisticker:'Ticker'};
  const newsFormats={weekend:'Berichte vom Wochenende',midweek:'News ab Mittwoch'};
  const filenamePattern=/^\d{6}_(Bericht_Wochenende|News)_(DEL2|Oberliga|Bayernliga)\.mp3$/;
  const expectedFormatPart=newsFormat==='weekend'?'_Bericht_Wochenende_':'_News_';
